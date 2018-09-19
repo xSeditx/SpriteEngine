@@ -1,0 +1,340 @@
+
+
+Quad  MAKE_Rect(int x,int y, int w, int h)
+{
+	Quad ret;
+		ret.x = x;
+		ret.y = y;
+		ret.Height = h;
+		ret.Width  = w;
+return ret;
+}
+
+
+
+// Vec2 UV[] = 
+// {
+//     Vec2( 1.0f, 1.0f ),
+//     Vec2( 0.0f, 1.0f ),
+//     Vec2( 0.0f, 0.0f ), 
+//     Vec2( 1.0f, 0.0f )
+// };
+
+
+//========================================================================================================================================== 
+//---------------------------------- SPRITE.CPP POSSIBLY ADD THIS BACK LATER IDK ------------------------------------------------------------------------------------------------
+//========================================================================================================================================== 
+std::vector<SpriteImage*> SpriteImage::List;
+int SpriteImage::Count = 0;
+
+std::vector<Sprite*> Sprite::List;
+int Sprite::Count = 0;
+
+
+
+SpriteImage::SpriteImage(char *name,  const char *file)
+           : ID(Count++)
+{
+     Name = name;
+//     ImageSurface = IMG_Load(file);
+// if(!ImageSurface)
+// {
+//         Print("ImageClass: Image Can not be loaded");Print(file);
+//     return;
+// }
+//     ImageTexture = SDL_CreateTextureFromSurface(SCREEN->Renderer, ImageSurface);
+
+// if(!ImageTexture)
+// {
+//         Print("ImageClass: Texture Can not be made.");Print(file);
+//     return;
+// }
+
+//     Size.x = ImageSurface->w;
+//     Size.y = ImageSurface->h;
+
+    List.push_back(this);
+}
+SpriteImage::SpriteImage(Image *surf, Quad area)
+            : ID(Count++)
+{
+    
+   // Quad dest = {0, 0, area.Width, area.Height};
+//    SDL_BlitSurface(surf, &area, ImageSurface, &dest);
+
+//  ImageTexture = SDL_CreateTextureFromSurface(SCREEN->Renderer, ImageSurface);
+// 
+//  if(!ImageTexture)
+//  {
+//          Print("ImageClass: Texture Can not be made from existing Surface."); 
+//      return;
+//  }
+// 
+    List.push_back(this);
+}
+
+void SpriteImage::Render(Vec2 position)
+{
+
+//    Quad srcrect = {0, 0, Size.x, Size.y}; 
+//    Quad dstrect = {position.x, position.y , position.x + Size.x, position.y + Size.y};
+//    SDL_RenderCopy(SCREEN->Renderer, ImageTexture, &srcrect, &dstrect);
+//    SDL_RenderCopyEx(SCREEN->Renderer, SOURCE->SOURCE, &srcrect, &dstrect, Angle, NULL, SDL_FLIP_NONE);
+}
+void SpriteImage::Render(Vec2 position, Vec2 size)
+{
+//    Quad srcrect = {0, 0, size.x, size.y}; 
+//    Quad dstrect = {position.x, position.y ,  size.x,size.y};
+//    SDL_RenderCopy(SCREEN->Renderer, ImageTexture, &srcrect, &dstrect);
+}
+
+
+
+   class SpriteImage
+{
+public:
+    SpriteImage(){}
+
+    SpriteImage(char *name, const char *file);
+    SpriteImage(Image *surf, Quad area);
+
+
+    int ID;
+    Vec2 Size;
+    Image *ImageTexture;
+
+    void Render(Vec2 position);
+    void Render(Vec2 position, Vec2 size);
+
+char *Name;
+static SpriteImage *GetByName(char *name)
+{
+    for_loop(Index, Count)
+    {
+        if(List[Index]->Name == name)
+        {
+            return List[Index];
+        }
+    }
+  return nullptr;
+}
+
+  static std::vector<SpriteImage *> List;
+  static int Count;
+};
+//========================================================================================================================================== 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//========================================================================================================================================== 
+
+
+
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   // VAO.Vertices = new VertexBuffer(  &VertexData[0], 4); // VertexBuffer(Vec3 *Vertexdata, GLsizei count);
+   // VAO.Indices  = new  IndexBuffer(   &IndexData[0], 6); // IndexBuffer(GLuint *data, GLsizei count);
+   // VAO.Textures = new     UVBuffer(*Picture, &UV[0], 4); // UVBuffer(Image &img, Vec2 *UVdata, GLsizei count);
+
+
+// Sprite::Sprite(char *name, SpriteImage *source, int numstates)
+//       : NumberofStates(numstates)
+// {
+//     Name = name;
+//     States.reserve(numstates);
+// 
+//     for_loop(count, NumberofStates)
+//     {
+//         State temp;
+//         States.emplace_back(temp);
+//     }
+//     
+//     CurrentState = 0;
+//     AnimationSpeed = 150;
+// 
+//   //  Vec3 VertexData[] = {
+//   //       Vec3(X,Y,0),
+//   //       Vec3(X + W, Y, 0),
+//   //       Vec3(X + W, Y + H,0),
+//   //       Vec3(X ,    Y + H, 0), 
+//   //  };
+//   //
+// 
+//   //  SpriteVAO.Vertices
+// 
+// 
+// 
+//     ID = Count++;
+//     List.push_back(this);
+// }
+
+
+
+
+
+
+//    States[CurrentState].CurrentFrame = (ticks / AnimationSpeed) % States[CurrentState].TotalFrames;
+
+//    Quad srcrect = States[CurrentState].FRAMES[States[CurrentState].CurrentFrame]; 
+//    Quad dstrect = {Position.x - (Size.x *.5), Position.y - (Size.y * .5), Size.x, Size.y};
+
+// Frames[CurrentFrame].Bind();
+//  Picture.Bind();
+
+//std::vector<UVBuffer> Frames;
+//void  Render();
+
+
+
+Vec2 Coords[4];
+GLuint ID;
+
+
+
+
+Vec2*  ConvertPixeltoUV(Image*img, int x,int y, int h, int w);
+Vec2*  Frame::ConvertPixeltoUV(Image*img, int x,int y, int h, int w)
+{
+    float UnitX = (1 / Picture->Width);
+    float UnitY = (1 / Picture->Height);
+    Vec2 BufferData[] =
+    {
+        Vec2(             x * UnitX ,  y * UnitY               ),
+        Vec2((x * UnitX)+(w * UnitX),  y * UnitY               ),
+        Vec2((x * UnitX)+(w * UnitX), (y * UnitY) + (h * UnitY)),
+        Vec2(             x * UnitX , (y * UnitY) + (h * UnitY)),
+    };
+  return BufferData;
+}
+
+
+
+//========================================================================================================================================== 
+//---------------------------------- SPRITE.CPP VARIOUS RENDERING METHODS NO LONGER APPLICABLE ------------------------------------------------------------------------------------------------
+//========================================================================================================================================== 
+ ~~~~HEADER
+ ~~~~~~SPRITE CLASS
+        void  Render(float angle);
+        void  Render(Vec2 pos);
+        void  Render(Vec2 pos, float angle);
+//-----------------------------------------------------------------------------------------------
+~~~CPP
+void Sprite::Render(float angle)
+{
+    GLuint ticks = glfwGetTime();
+    States[CurrentState].CurrentFrame = (ticks / AnimationSpeed) % States[CurrentState].TotalFrames;
+
+    Quad srcrect = States[CurrentState].FRAMES[States[CurrentState].CurrentFrame]; //{ frames * SPRITE_WIDTH, 0, SPRITE_WIDTH, SPRITE_HEIGHT };
+    Quad dstrect = {Position.x - (Size.x *.5), Position.y - (Size.y * .5), Size.x, Size.y};
+//    SDL_RenderCopy(SCREEN->Renderer, SpriteSheet->Sheet->ImageTexture, &srcrect, &dstrect);  
+    Vec2 Center = Vec2(Size.x / 2,Size.y/2);
+   // SDL_RenderCopyEx(SCREEN->Renderer, SpriteSheet->ImageTexture ,  &srcrect, &dstrect, Angle, &Center, SDL_RendererFlip(0));
+}
+void Sprite::Render(Vec2 position)
+{
+//    Uint32 ticks = SDL_GetTicks();
+    GLuint ticks = glfwGetTime();
+
+    States[CurrentState].CurrentFrame = (ticks / AnimationSpeed) % States[CurrentState].TotalFrames;
+
+    Quad srcrect = States[CurrentState].FRAMES[States[CurrentState].CurrentFrame]; //{ frames * SPRITE_WIDTH, 0, SPRITE_WIDTH, SPRITE_HEIGHT };
+    Quad dstrect = {position.x - (Size.x *.5), position.y - (Size.y * .5), Size.x, Size.y};
+
+    Vec2 Center = Vec2(Size.x *.5f,Size.y * .5f);
+   // SDL_RenderCopyEx(SCREEN->Renderer, SpriteSheet->ImageTexture ,  &srcrect, &dstrect, Angle, &Center,SDL_RendererFlip(0));
+}
+void Sprite::Render(Vec2 pos, float angle)
+{
+//    Uint32 ticks = SDL_GetTicks();
+    GLuint ticks = glfwGetTime();
+
+    States[CurrentState].CurrentFrame = (ticks / AnimationSpeed) % States[CurrentState].TotalFrames;
+    Quad srcrect = States[CurrentState].FRAMES[States[CurrentState].CurrentFrame]; //{ frames * SPRITE_WIDTH, 0, SPRITE_WIDTH, SPRITE_HEIGHT };
+    Quad dstrect = {pos.x - (Size.x *.5), pos.y - (Size.y * .5), Size.x, Size.y};
+
+//    Vec2 Center = Vec2(Size.x / 2,Size.y/2);
+//    SDL_RenderCopyEx(SCREEN->Renderer, SpriteSheet->ImageTexture ,  &srcrect, &dstrect, Angle, &Center,SDL_RendererFlip(0));
+
+}
+
+//========================================================================================================================================== 
+//---------------------------------------------------------------------------------------------------------------------------------------------------
+//========================================================================================================================================== 
+ 
+ 
+ 
+ 
+         State(Quad sourcerect,Vec2 size, uint numframes);
+	    State(Image *img, uint x, uint y,uint w,uint h,uint numframes);
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ //   Vec3 VertexData[] = 
+//   {
+//        Vec3(Position.x, Position.y,0),
+//        Vec3(Position.x + Picture->Width, Position.y, 0),
+//        Vec3(Position.x + Picture->Width, Position.y + Picture->Height,0),
+//        Vec3(Position.x ,Position.y + Picture->Height, 0), 
+//   };
+//
+    float X = 0,
+          Y = 0,
+          W = SCREENWIDTH,
+          H = SCREENHEIGHT - 10;
+            
+    Vec3 VertexData[] = {
+         Vec3(X,Y,0),
+         Vec3(X + W, Y, 0),
+         Vec3(X + W, Y + H,0),
+         Vec3(X ,    Y + H, 0), 
+    };
+
+    GLuint IndexData[] = {
+        0,1,3,
+        1,2,3
+    };
+
+    Vec2 UV[] = {
+        Vec2( 0.0f, 0.0f ), 
+        Vec2( 1.0f, 0.0f ),
+        Vec2( 1.0f, 1.0f ),
+        Vec2( 0.0f, 1.0f )
+    };
+
+
+    VAOBuffer Object;
+    Object.Vertices = new VertexBuffer(&VertexData[0], 4);//   VertexBuffer(Vec3 *Vertexdata, GLsizei count);
+    Object.Indices  = new  IndexBuffer(&IndexData[0], 6); //   IndexBuffer(GLuint *data, GLsizei count);
+    Object.Textures = new     UVBuffer(*Picture, &UV[0], 4);// UVBuffer(Image &img, Vec2 *UVdata, GLsizei count);
+        // Textures = new TextureBuffer(*StoneTexture , &TextureCoords[0], 24);
+
+ 
+ 
+ 
+            //glBegin(GL_QUADS);
+	        //    glVertex2f( X ,    Y);
+            //    glVertex2f( X + W, Y);
+            //    glVertex2f( X + W, Y + H);
+            //    glVertex2f( X ,    Y + H);
+            //glEnd();                  
+         //glPushMatrix();
+         //    Object.Bind();
+         //        glDrawElements(GL_TRIANGLES, Object.Indices->ElementCount , GL_UNSIGNED_INT, nullptr);
+         //    Object.Unbind();
+         //glPopMatrix();
