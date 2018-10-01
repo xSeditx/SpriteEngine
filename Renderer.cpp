@@ -19,8 +19,8 @@ VertexBuffer::VertexBuffer(Vec3 *vertexdata,GLsizei vcount)
               ID(0) 
 {
     Data = new Vec3[vcount];
-    Data = vertexdata;
-
+//    *Data = *vertexdata;
+    memcpy(Data, vertexdata, vcount * sizeof(Vec3));
     glGenBuffers(1 , &ID);
     glBindBuffer(GL_ARRAY_BUFFER, ID);
         glBufferData(GL_ARRAY_BUFFER, ElementCount * sizeof(Vec3), vertexdata, GL_DYNAMIC_DRAW) ; 
@@ -68,7 +68,7 @@ IndexBuffer::IndexBuffer(GLuint *data, GLsizei count)
              ID(0)
 {
         Data = new GLuint[count];
-        Data = data;
+        memcpy(Data, data, count * sizeof(GLuint));
 
         glGenBuffers(1,&ID);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ID);
@@ -101,7 +101,8 @@ ColorBuffer::ColorBuffer(Vec4 *ColorData, GLsizei count)
              ID(0)
 {
     Data = new Vec4[count];
-    Data = ColorData;
+    memcpy(Data, ColorData, count * sizeof(Vec4));
+
 
     glGenBuffers(1 , &ID);
     glBindBuffer(GL_ARRAY_BUFFER, ID);
@@ -140,7 +141,7 @@ NormalBuffer::NormalBuffer(Vec3 *NormalData, GLsizei count)
               ID(0)
 {
     Data = new Vec3[count];
-    Data = NormalData;
+    memcpy(Data, NormalData, count * sizeof(Vec3));
 
     glGenBuffers(1 , &ID);
     glBindBuffer(GL_ARRAY_BUFFER, ID);
@@ -523,20 +524,17 @@ VAOBuffer::VAOBuffer()
 }
 void VAOBuffer::Attach(VertexBuffer  *vertices)
 {
-
-
     Vertices = vertices;
 }
 void VAOBuffer::Attach(IndexBuffer   *indices)
 {
-
     Indices = indices;
 }
 void VAOBuffer::Attach(NormalBuffer  *normals)
 {
     Normals = normals;
 }
-void VAOBuffer::Attach(UVBuffer *texture)
+void VAOBuffer::Attach(TextureBuffer *texture)
 {
     Textures = texture;
 }
@@ -564,10 +562,17 @@ void VAOBuffer::Unbind()
 //==================================================================================================================================================
 
 
-
-
-
-
+Image::~Image()
+{ 
+#if _TEXTURE_DEBUG
+    Print("Deleting Image: " << ID);
+#endif
+    glDeleteTextures(1, &ID);
+    if(Data != nullptr)
+    {
+        delete(Data);
+    }
+}
 Image::Image()
        : ID(0), 
          Data(nullptr),
@@ -631,49 +636,6 @@ void Image::Unbind()
 {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
-Image::~Image()
-{ 
-#if _TEXTURE_DEBUG
-    Print("Deleting Image: " << ID);
-#endif
-    glDeleteTextures(1, &ID);
-    if(Data != nullptr)
-    {
-        delete(Data);
-    }
-}
-GLubyte* Image::LoadBMP(const char *filename)
-{
-    FILE *File = fopen(filename,"rb");
-    if(!File)
-    {
-        Print("Image Could Not Be Loaded");
-        return 0;
-    }
-
-    if(fread(header,1,54,File)!=54)
-    {
-        Print("Not the Correct BMP format");
-        return 0;
-    }
-
-
-    dataPos   = *(int*)&(header[0x0A]);
-    ImageSize = *(int*)&(header[0x22]);
-    Width     = *(int*)&(header[0x12]);
-    Height    = *(int*)&(header[0x16]);
-
-//    ElementCount = ImageSize;
-    if(ImageSize == 0) ImageSize = Width * Height ;
-    if(dataPos   == 0) dataPos = 54;
-
-    GLubyte *imagedata  = new GLubyte[ImageSize];
-
-    fread(imagedata,1,ImageSize,File);
-    fclose(File);
-
-    return imagedata;
-}
 
 void Image::SetSize(float width, float height)
 {
@@ -719,31 +681,64 @@ void Image::GenDepthTexture(float W, float H)
         glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, Width, Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 }
 
+GLubyte* Image::LoadBMP(const char *filename)
+{
+    FILE *File = fopen(filename,"rb");
+    if(!File)
+    {
+        Print("Image Could Not Be Loaded");
+        return 0;
+    }
+
+    if(fread(header,1,54,File)!=54)
+    {
+        Print("Not the Correct BMP format");
+        return 0;
+    }
+
+
+    dataPos   = *(int*)&(header[0x0A]);
+    ImageSize = *(int*)&(header[0x22]);
+    Width     = *(int*)&(header[0x12]);
+    Height    = *(int*)&(header[0x16]);
+
+//    ElementCount = ImageSize;
+    if(ImageSize == 0) ImageSize = Width * Height ;
+    if(dataPos   == 0) dataPos = 54;
+
+    GLubyte *imagedata  = new GLubyte[ImageSize];
+
+    fread(imagedata,1,ImageSize,File);
+    fclose(File);
+
+    return imagedata;
+}
+
 //==================================================================================================================================================
 //__________________________________ TEXTURE BUFFER CLASS __________________________________________________________________________________________
 
-UVBuffer::~UVBuffer()
+TextureBuffer::~TextureBuffer()
 {
-#if _UV_DEBUG
-    Print("Deleting UV Coords: ~ You have not set it up to delete it yet ~ " << ID);
+#if _TEXTURE_DEBUG
+    Print("Deleting TextureBuffer: ~ You have not set it up to delete it yet ~ " << ID);
 #endif
 //    delete(Image);
 //    glDeleteBuffers(1, &ID);   
 }
-UVBuffer::UVBuffer(Image &img, Vec2 *data,  GLsizei count)
+TextureBuffer::TextureBuffer(Image &img, Vec2 *data,  GLsizei count)
              : ElementCount(count) 
 {
     Data = new Vec2[count];
-    Data = data;
+    memcpy(Data, data, count * sizeof(Vec2));
 
     Picture = img;
 
     glGenBuffers(1, &ID);
     glBindBuffer(GL_ARRAY_BUFFER, ID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * count , data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * count , data, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-void UVBuffer::Bind()
+void TextureBuffer::Bind()
 {
     Picture.Bind();
 
@@ -754,9 +749,42 @@ void UVBuffer::Bind()
         glTexCoordPointer(2, GL_FLOAT, 0, (char *) NULL);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
-void UVBuffer::Unbind()
+void TextureBuffer::Unbind()
 {
       //  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableVertexAttribArray(TEXTURE_ATTRIB);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+
+UVBuffer::~UVBuffer()
+{
+#if _UV_DEBUG
+    Print("Deleting UV Coords: ~ You have not set it up to delete it yet ~ " << ID);
+#endif
+//    delete(Image);
+//    glDeleteBuffers(1, &ID);   
+}
+UVBuffer::UVBuffer( Vec2 *data,  GLsizei count)
+        : ElementCount(count) 
+{
+    Data = new Vec2[count];
+    memcpy(Data, data, count * sizeof(Vec2));
+
+    glGenBuffers(1, &ID);
+    glBindBuffer(GL_ARRAY_BUFFER, ID);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * count , data, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+void UVBuffer::Bind()
+{
+    glBindBuffer(GL_ARRAY_BUFFER, ID);      
+        glTexCoordPointer(2, GL_FLOAT, 0, (char *) NULL);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+}
+void UVBuffer::Unbind()
+{
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableVertexAttribArray(TEXTURE_ATTRIB);
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }

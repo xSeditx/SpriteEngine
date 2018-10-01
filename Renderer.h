@@ -102,6 +102,21 @@ class IndexBuffer
         void Bind();
         void Unbind();
 };
+class UVBuffer
+{
+public:
+    UVBuffer();
+   ~UVBuffer();
+    UVBuffer(Vec2 *UVdata, GLsizei count);
+
+    GLuint ID;
+    GLuint ElementCount;
+
+    Vec2    *Data;
+public:
+    void Bind();
+    void Unbind();
+};
 class Image
 {
 public:
@@ -131,12 +146,12 @@ public:
         void Bind();
         void Unbind();
 };
-class UVBuffer
+class TextureBuffer
 {
 public:
-    UVBuffer();
-   ~UVBuffer();
-    UVBuffer(Image &img, Vec2 *UVdata, GLsizei count);
+    TextureBuffer();
+   ~TextureBuffer();
+    TextureBuffer(Image &img, Vec2 *UVdata, GLsizei count);
 
     GLuint ID;
     GLuint ElementCount;
@@ -148,6 +163,7 @@ public:
     void Bind();
     void Unbind();
 };
+
 class RenderBuffer
 {
 public:
@@ -222,6 +238,27 @@ private:
 
 
 
+class VAOBuffer
+{
+public:
+       VAOBuffer();
+      ~VAOBuffer(){}
+
+       VertexBuffer *Vertices;
+       IndexBuffer  *Indices;
+       NormalBuffer *Normals;
+       TextureBuffer     *Textures;
+       ColorBuffer  *Colors;
+
+       void Attach(VertexBuffer *vertices);
+       void Attach(IndexBuffer  *indices);
+       void Attach(NormalBuffer *normals);
+       void Attach(TextureBuffer     *textures);
+       void Attach(ColorBuffer  *color);
+
+       void Bind();
+       void Unbind();
+};
 
 // CONVERT THIS NAME TO SOMETHING LIKE IMAGE SINCE IT DOES NOT MAKE A TEXTURE BUT INSTEAD LOADS AN IMAGE
 // THE TEXTUREBUFFER SHOULD EITHER BECOME TEXTURE OR PROB EVEN BETTER CALLED UV_BUFFER OR SOMETHING AND HAVE 
@@ -254,28 +291,4 @@ class PBuffer
 
       GLuint width;
       GLuint height;
-};
-
-
-
-class VAOBuffer
-{
-public:
-       VAOBuffer();
-      ~VAOBuffer(){}
-
-       VertexBuffer *Vertices;
-       IndexBuffer  *Indices;
-       NormalBuffer *Normals;
-       UVBuffer     *Textures;
-       ColorBuffer  *Colors;
-
-       void Attach(VertexBuffer *vertices);
-       void Attach(IndexBuffer  *indices);
-       void Attach(NormalBuffer *normals);
-       void Attach(UVBuffer     *textures);
-       void Attach(ColorBuffer  *color);
-
-       void Bind();
-       void Unbind();
 };

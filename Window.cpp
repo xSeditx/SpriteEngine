@@ -103,6 +103,8 @@ Window::Window(int x,int y,int w,int h,char* title)
         glLoadIdentity();
         glTranslatef(0, 0, 0);
 
+
+        Camera = Camera2D(Vec2(0,0),SCREENWIDTH, SCREENHEIGHT);
 //-------------------------------------------------------------------------------------------      
 }
 void Window::SetOrthographic(int width, int height)

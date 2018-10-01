@@ -1,5 +1,5 @@
 #pragma once
-
+#define _WIP_    1
 #define GLEW_STATIC
 // I HATE WARNINGS
 #pragma warning(disable: 4244)	
@@ -23,8 +23,8 @@
 #include <ctime>
 
 
-#define SCREENWIDTH       640
-#define SCREENHEIGHT      480
+#define SCREENWIDTH       1280
+#define SCREENHEIGHT      960
 
 #define RADIANS(x)   ((x)  * 0.01745329251)
 #define DEGREES(x)   ((x)  * 57.2957795131)
@@ -390,7 +390,126 @@ public:
 };
 
 
+class Camera2D
+{
+public:
+    Camera2D(){};
+    Camera2D(Vec2 position, float width, float height)
+    {
+        Position = position;
+        Zoom = 1.0f;
+        Rotation = 0.0f;
+        Width = width;
+        Height = height;
+        CAM_Z = Zoom;
 
+        GLfloat FF_PROJECTION[16];
+        glGetFloatv(GL_PROJECTION_MATRIX,  &FF_PROJECTION[0]) ;
+        
+        ProjectionMatrix[0][0] = FF_PROJECTION[0];
+        ProjectionMatrix[0][1] = FF_PROJECTION[1];
+        ProjectionMatrix[0][2] = FF_PROJECTION[2];
+        ProjectionMatrix[0][3] = FF_PROJECTION[3];
+                  
+        ProjectionMatrix[1][0] = FF_PROJECTION[4];
+        ProjectionMatrix[1][1] = FF_PROJECTION[5];
+        ProjectionMatrix[1][2] = FF_PROJECTION[6];
+        ProjectionMatrix[1][3] = FF_PROJECTION[7];
+                  
+        ProjectionMatrix[2][0] = FF_PROJECTION[8];
+        ProjectionMatrix[2][1] = FF_PROJECTION[9];
+        ProjectionMatrix[2][2] = FF_PROJECTION[10];
+        ProjectionMatrix[2][3] = FF_PROJECTION[11];
+                  
+        ProjectionMatrix[3][0] = FF_PROJECTION[12];
+        ProjectionMatrix[3][1] = FF_PROJECTION[13];
+        ProjectionMatrix[3][2] = FF_PROJECTION[14];
+        ProjectionMatrix[3][3] = FF_PROJECTION[15];
+
+        glGetFloatv(GL_MODELVIEW_MATRIX,  &FF_PROJECTION[0]) ;
+
+        ViewMatrix[0][0] = FF_PROJECTION[0];
+        ViewMatrix[0][1] = FF_PROJECTION[1];
+        ViewMatrix[0][2] = FF_PROJECTION[2];
+        ViewMatrix[0][3] = FF_PROJECTION[3];
+        ViewMatrix[1][0] = FF_PROJECTION[4];
+        ViewMatrix[1][1] = FF_PROJECTION[5];
+        ViewMatrix[1][2] = FF_PROJECTION[6];
+        ViewMatrix[1][3] = FF_PROJECTION[7];
+        ViewMatrix[2][0] = FF_PROJECTION[8];
+        ViewMatrix[2][1] = FF_PROJECTION[9];
+        ViewMatrix[2][2] = FF_PROJECTION[10];
+        ViewMatrix[2][3] = FF_PROJECTION[11];
+        ViewMatrix[3][0] = FF_PROJECTION[12];
+        ViewMatrix[3][1] = FF_PROJECTION[13];
+        ViewMatrix[3][2] = FF_PROJECTION[14];
+        ViewMatrix[3][3] = FF_PROJECTION[15];
+
+    }
+
+    ~Camera2D(){}
+
+   Vec2 Position;
+   Vec2 Origin;
+   float Rotation;
+
+   Matrix ProjectionMatrix, ModelMatrix, ViewMatrix;
+
+
+   float CAM_Z;
+
+   inline float GetZoom()
+   {
+       return Zoom;
+   }
+   inline void  SetZoom(const float zoom)
+   {
+       Zoom = zoom;
+   }
+
+
+   void CreateTransform()   {}
+
+   float Width, Height;
+
+   Matrix GetViewMatrix()
+   {
+       Matrix view;
+       Vec2 midOffset = Vec2(this->Width * 0.5, this->Height * 0.5);
+   
+       view = glm::translate(view, glm::vec3(midOffset, 0.0));
+       view = glm::rotate(view, -this->Rotation, Vec3(0.0, 0.0, 1.0));
+       view = glm::translate(view, Vec3(-midOffset, 0.0));
+       view = glm::translate(view, Vec3(-this->Position, CAM_Z));
+   
+       return view;
+   }
+
+   inline Matrix GetTransform();	
+
+
+   	struct Transformation
+	{
+		Matrix       ViewMatrix;
+		Vec2         LastPosition;
+		float        LastZoom;
+		Vec2         LastOrigin;
+		float        LastRotation;
+		void Update(const Vec2& p, const Vec2& origin, const float zoom, const float rotation)
+        {
+            LastPosition = p;
+            LastOrigin = origin; 
+            LastZoom = zoom; 
+            LastRotation = rotation;	
+        }
+	};
+
+
+private:
+
+   Transformation Transform;
+   float Zoom;
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                         WINDOW CLASS                                                                                                                            
@@ -450,38 +569,44 @@ public:
         
         CallBack Callbacks;
 
-        Cam Camera;
+        Camera2D Camera;
 
 private:
     unsigned short SyncRATE;
     int           FrameRate;
+
+
 public:
-               int GetFPS(){ return FrameRate;}
+               int GetFPS()
+               { 
+                   return FrameRate;
+               }
 
-              void Destroy             ();
 
-              void SetSyncRate                (unsigned short);
-    unsigned short GetSyncRate           ();
-       inline glm::vec2 GetPosition ();
+              void Destroy ();
+
+              void SetSyncRate (unsigned short);
+    unsigned short GetSyncRate ();
+
+       inline Vec2 GetPosition ();
        inline void SetPosition (GLFWwindow *,int x, int y) ;
-       inline void SHOW()                                              {   glfwShowWindow(this->glCONTEXT);             }
-       inline void HIDE()                                              {   glfwHideWindow(this->glCONTEXT);             }
+       inline void Show() { glfwShowWindow(this->glCONTEXT); }
+       inline void Hide() { glfwHideWindow(this->glCONTEXT); }
 
 
        void SetOrthographic(int width, int height);
 
 private:	
 
-
-static void Error_callback           ( int,    const char*);
-static void Resize_Callback          ( GLFWwindow *window,int,int);
-static void Window_close_callback    ( GLFWwindow *window);
-static void KeyBoard_Callback        ( GLFWwindow *window,    int,    int, int, int);
-static void Mouse_Callback           ( GLFWwindow *window,    int,    int, int);
-static void MouseMove_Callback       ( GLFWwindow *window, double, double);
-static void DropFile_callback        ( GLFWwindow *window,    int, const char**);
-static void Window_Size_Callback     ( GLFWwindow *window,    int,    int);
-
+  static void Error_callback           ( int,    const char*);
+  static void Resize_Callback          ( GLFWwindow *window,int,int);
+  static void Window_close_callback    ( GLFWwindow *window);
+  static void KeyBoard_Callback        ( GLFWwindow *window,    int,    int, int, int);
+  static void Mouse_Callback           ( GLFWwindow *window,    int,    int, int);
+  static void MouseMove_Callback       ( GLFWwindow *window, double, double);
+  static void DropFile_callback        ( GLFWwindow *window,    int, const char**);
+  static void Window_Size_Callback     ( GLFWwindow *window,    int,    int);
+  
 };
  
 

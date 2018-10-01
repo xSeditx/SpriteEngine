@@ -1,4 +1,43 @@
+======================================================================================================================================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   SHADER STUFF   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+======================================================================================================================================================================================================
 
+
+
+gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
+
+
+
+======================================================================================================================================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+======================================================================================================================================================================================================
+
+
+
+        if(KD == true)
+        {
+            m_Sprite.CurrentState += 1;
+            m_Sprite.CurrentState %= 4;
+        } 
+ 
+ 
+            //TileSet.Tiles[y].Render(Vec2(x*15,y * 15));
+//
+//char *Name;
+//static Tile *GetByName(char *name)
+//{
+//    for_loop(Index, Count)
+//    {
+//        if(TileSet[Index]->Name == name)
+//        {
+//            return TileSet[Index];
+//        }
+//    }
+//    Print("Error, Variable " << name << " Does not Exist in TileSet");
+//    exit(0x200);
+//  return nullptr;
+//}
+//
 
 Quad  MAKE_Rect(int x,int y, int w, int h)
 {
@@ -144,7 +183,7 @@ static SpriteImage *GetByName(char *name)
    
    // VAO.Vertices = new VertexBuffer(  &VertexData[0], 4); // VertexBuffer(Vec3 *Vertexdata, GLsizei count);
    // VAO.Indices  = new  IndexBuffer(   &IndexData[0], 6); // IndexBuffer(GLuint *data, GLsizei count);
-   // VAO.Textures = new     UVBuffer(*Picture, &UV[0], 4); // UVBuffer(Image &img, Vec2 *UVdata, GLsizei count);
+   // VAO.Textures = new     TextureBuffer(*Picture, &UV[0], 4); // TextureBuffer(Image &img, Vec2 *UVdata, GLsizei count);
 
 
 // Sprite::Sprite(char *name, SpriteImage *source, int numstates)
@@ -191,7 +230,7 @@ static SpriteImage *GetByName(char *name)
 // Frames[CurrentFrame].Bind();
 //  Picture.Bind();
 
-//std::vector<UVBuffer> Frames;
+//std::vector<TextureBuffer> Frames;
 //void  Render();
 
 
@@ -321,7 +360,7 @@ void Sprite::Render(Vec2 pos, float angle)
     VAOBuffer Object;
     Object.Vertices = new VertexBuffer(&VertexData[0], 4);//   VertexBuffer(Vec3 *Vertexdata, GLsizei count);
     Object.Indices  = new  IndexBuffer(&IndexData[0], 6); //   IndexBuffer(GLuint *data, GLsizei count);
-    Object.Textures = new     UVBuffer(*Picture, &UV[0], 4);// UVBuffer(Image &img, Vec2 *UVdata, GLsizei count);
+    Object.Textures = new     TextureBuffer(*Picture, &UV[0], 4);// TextureBuffer(Image &img, Vec2 *UVdata, GLsizei count);
         // Textures = new TextureBuffer(*StoneTexture , &TextureCoords[0], 24);
 
  
