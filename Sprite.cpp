@@ -180,6 +180,7 @@ TileMap::TileMap(Image *img, Quad f)
     Vec3   *Vdata  = new Vec3(0);
     Vec2   *UVData = new Vec2(0);
     GLuint *IData  = new GLuint(0);
+
     Vertices = new VertexBuffer(Vdata,1);
     UVCoords = new UVBuffer(UVData,1);
     Indices  = new IndexBuffer(IData,1);
@@ -315,10 +316,10 @@ Tile::Tile(TileMap* source, Quad area)
     float UnitY = (1.0f / source->FullMap->Height);
 
     Vec2 Coords[4];
-         Coords[0] = Vec2((float)area.x * UnitX + (float)area.Width * UnitX, (float)area.y * UnitY + (float)area.Height * UnitY);
-         Coords[1] = Vec2((float)area.x * UnitX , (float)area.y * UnitY + (float)area.Height * UnitY);
-         Coords[2] = Vec2((float)area.x * UnitX , (float)area.y * UnitY);
-         Coords[3] = Vec2((float)area.x * UnitX + (float)area.Width * UnitX, (float)area.y * UnitY);
+         Coords[2] = Vec2((float)area.x * UnitX + (float)area.Width * UnitX, (float)area.y * UnitY + (float)area.Height * UnitY);
+         Coords[3] = Vec2((float)area.x * UnitX , (float)area.y * UnitY + (float)area.Height * UnitY);
+         Coords[0] = Vec2((float)area.x * UnitX , (float)area.y * UnitY);
+         Coords[1] = Vec2((float)area.x * UnitX + (float)area.Width * UnitX, (float)area.y * UnitY);
 
     Picture = source->FullMap;
     Position = Vec2(100);

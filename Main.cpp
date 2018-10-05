@@ -1,6 +1,9 @@
 #include"Window.h"
 #include"Renderer.h"
 #include"Sprites.h"
+
+#include"World.h"
+
 bool KD;
 void keydown(GLushort Keycode, GLushort ScanCode, GLushort Modifier , GLubyte rep)
 {
@@ -50,6 +53,7 @@ void main()
 
     Shader TileShader("TileShader.vert", "TileShader.frag");
 
+    World MainWorld(WorldData, WorldWidth, WorldHeight);
 
     for_loop(x, 86)
     {
@@ -77,8 +81,10 @@ void main()
           //  B->Position.x += RANDOM(2)- 1;
           //  B->Position.y += RANDOM(2)- 1;
           //}
-            TileSet.BatchUpdate();
-            TileSet.Render();
+           // TileSet.BatchUpdate();
+           // TileSet.Render();
+            MainWorld.Update();
+            MainWorld.Render();
 
             if(TileSet.BatchedTiles.size() > 0){TileSet.DestroyTile((int)rand()%TileSet.BatchedTiles.size());}
             m_Sprite.Render();

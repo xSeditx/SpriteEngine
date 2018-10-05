@@ -24,6 +24,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Fileutils.h" />
@@ -31,9 +32,14 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Removed.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TileShader.frag" />
+    <None Include="TileShader.Vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EA23D21E-61FE-4896-ACB9-5E4AC3D55ED8}</ProjectGuid>

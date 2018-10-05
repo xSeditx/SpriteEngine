@@ -51,7 +51,7 @@ class VertexBuffer
         void Unlock();
 
         GLfloat *Read();
-        void Write(GLuint pos, GLfloat data);
+        void Write(GLuint pos, GLfloat data); 
 
         void Rebuild();
 };  
